@@ -1,40 +1,379 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyServerKu — KyrooID</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Maintenance Mode · Cooldown 1 Hari</title>
+    <!-- Font Awesome 5 (ikon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary: #2d5be3;
-            --primary-dark: #1a3fb0;
-            --secondary: #00c853;
-            --danger: #ff4444;
-            --warning: #ffbb33;
-            --dark: #121212;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-dark: #343a40;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: #f0f2f5;
-            color: var(--dark);
-            line-height: 1.6;
+            background: linear-gradient(145deg, #0b1a2e 0%, #1b2f44 100%);
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
             min-height: 100vh;
-            padding: 0;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: #e3f0fd;
+        }
+
+        .maintenance-card {
+            max-width: 750px;
+            width: 100%;
+            background: rgba(18, 30, 41, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(79, 131, 179, 0.25);
+            border-radius: 3.5rem;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 35px 65px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(164, 206, 255, 0.1) inset;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .icon-header {
+            font-size: 5rem;
+            color: #6bc5ff;
+            filter: drop-shadow(0 8px 12px rgba(0, 160, 255, 0.4));
+            margin-bottom: 0.75rem;
+            animation: subtlePulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes subtlePulse {
+            0% { opacity: 0.9; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.04); }
+            100% { opacity: 0.9; transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #f0f9ff, #b5dcff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 2px 5px rgba(0,30,50,0.6);
+        }
+
+        .sub-message {
+            font-size: 1.2rem;
+            color: #b6d6f0;
+            background: rgba(0, 30, 55, 0.5);
+            display: inline-block;
+            padding: 0.4rem 1.8rem;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 2.4rem;
+            font-weight: 350;
+        }
+
+        .cooldown-tag {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 400;
+            color: #9fc9f0;
+            margin-bottom: 1.2rem;
+        }
+
+        .cooldown-tag i {
+            color: #ffd966;
+            font-size: 1.3rem;
+        }
+
+        /* Timer utama */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 2.2rem;
+        }
+
+        .time-box {
+            background: rgba(5, 20, 30, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(115, 185, 255, 0.2);
+            border-radius: 2rem;
+            padding: 1.2rem 0.8rem;
+            min-width: 110px;
+            box-shadow: 0 20px 25px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(210, 235, 255, 0.1) inset;
+        }
+
+        .time-value {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(180deg, #fff, #c6e2ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px #0099ff60;
+            letter-spacing: 2px;
+        }
+
+        .time-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #87b9e0;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        .separator-dots {
+            font-size: 3.5rem;
+            font-weight: 200;
+            color: #567e9f;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* progress bar */
+        .progress-wrapper {
+            background: #0a1c2b;
+            height: 8px;
+            width: 100%;
+            border-radius: 20px;
+            margin: 2rem 0 1.8rem;
+            border: 1px solid #203d55;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #3fa2ff, #9ad0ff, #3fa2ff);
+            border-radius: 20px;
+            box-shadow: 0 0 12px #0099ff;
+            animation: loadingFlow 4s infinite ease-in-out;
+        }
+
+        @keyframes loadingFlow {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .info-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #99c1de;
+            margin-bottom: 2rem;
+            background: rgba(0, 33, 54, 0.5);
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            border: 1px dashed #31658b;
+        }
+
+        .info-text i {
+            color: #ffb75e;
+            margin-right: 0.4rem;
+        }
+
+        .info-text span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .social-icons a {
+            color: #6f9fc9;
+            transition: all 0.25s;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            background: rgba(0, 44, 75, 0.6);
+            border: 1px solid #2f5575;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            color: #fff;
+            background: #2e5f88;
+            border-color: #99d0ff;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px #0077ff60;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #6085a3;
+            border-top: 1px solid #1f3f55;
+            padding-top: 1.5rem;
+        }
+
+        /* responsive */
+        @media (max-width: 550px) {
+            .maintenance-card { padding: 2rem 1.5rem; border-radius: 2.5rem; }
+            h1 { font-size: 2.1rem; }
+            .time-box { min-width: 70px; padding: 0.8rem 0.2rem; }
+            .time-value { font-size: 2.8rem; }
+            .separator-dots { font-size: 2.5rem; }
+            .countdown-container { gap: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-card">
+        <!-- Ikon kunci / gear -->
+        <div class="icon-header">
+            <i class="fas fa-tools"></i>
+        </div>
+
+        <!-- Judul -->
+        <h1>Cooldown & Maintenance</h1>
+        <div class="sub-message">
+            <i class="fas fa-sync-alt fa-spin" style="margin-right: 8px;"></i> sistem sedang dalam penyempurnaan
+        </div>
+
+        <!-- Label cooldown dengan timer -->
+        <div class="cooldown-tag">
+            <i class="fas fa-hourglass-half"></i> 
+            <span>WAKTU AKTIF KEMBALI</span>
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+
+        <!-- COUNTDOWN 1 HARI (24 jam) -->
+        <div class="countdown-container" id="countdownTimer">
+            <!-- Hari (1 hari = 1) -->
+            <div class="time-box">
+                <span class="time-value" id="days">01</span>
+                <div class="time-label">Hari</div>
+            </div>
+            <div class="separator-dots">:</div>
+            <!-- Jam -->
+            <div class="time-box">
+                <span class="time-value" id="hours">00</span>
+                <div class="time-label">Jam</div>
+            </div>
+            <div class="separator-dots">:</div>
+            <!-- Menit -->
+            <div class="time-box">
+                <span class="time-value" id="minutes">00</span>
+                <div class="time-label">Menit</div>
+            </div>
+            <div class="separator-dots">:</div>
+            <!-- Detik -->
+            <div class="time-box">
+                <span class="time-value" id="seconds">00</span>
+                <div class="time-label">Detik</div>
+            </div>
+        </div>
+
+        <!-- Progress bar (hiasan) -->
+        <div class="progress-wrapper">
+            <div class="progress-fill"></div>
+        </div>
+
+        <!-- Informasi tambahan -->
+        <div class="info-text">
+            <span><i class="fas fa-clock"></i> perkiraan 24 jam</span>
+            <span><i class="fas fa-calendar-alt"></i> <span id="readyDate">besok, ...</span></span>
+        </div>
+
+        <!-- Tombol / medsos hanya hiasan -->
+        <div class="social-icons">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Status"><i class="fas fa-envelope"></i></a>
+        </div>
+
+        <footer>
+            ⚡ tim teknis sedang bekerja · mohon maaf atas ketidaknyamanannya
+        </footer>
+    </div>
+
+    <script>
+        (function() {
+            // Menentukan target: sekarang + 1 hari (24 jam)
+            // Menggunakan waktu saat ini + 24 jam (86400 detik)
+            const now = new Date();
+            const targetDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +1 hari
+
+            // Tampilkan tanggal siap (besok) di info-text, dengan format singkat
+            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+            const readyDateElem = document.getElementById('readyDate');
+            if (readyDateElem) {
+                // tampilkan perkiraan siap: besok + jam yang sama
+                readyDateElem.textContent = targetDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+            }
+
+            function updateCountdown() {
+                const currentTime = new Date().getTime();
+                const targetTime = targetDate.getTime();
+                const diff = targetTime - currentTime; // selisih milidetik
+
+                // Jika sudah lewat waktu, set ke 00:00:00 (tampilkan 0)
+                if (diff <= 0) {
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    // opsional: tampilkan pesan bahwa sudah selesai
+                    return;
+                }
+
+                // Konversi milidetik
+                const totalSeconds = Math.floor(diff / 1000);
+                const days = Math.floor(totalSeconds / (3600 * 24));
+                const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                // Format dua digit
+                const formatTwoDigits = (num) => (num < 10 ? '0' : '') + num;
+
+                // Tampilkan hari (kami ingin selalu 1 hari, tapi kode ini adaptif jika lebih/mundur)
+                document.getElementById('days').textContent = formatTwoDigits(days);
+                document.getElementById('hours').textContent = formatTwoDigits(hours);
+                document.getElementById('minutes').textContent = formatTwoDigits(minutes);
+                document.getElementById('seconds').textContent = formatTwoDigits(seconds);
+            }
+
+            // update setiap 1 detik
+            updateCountdown(); // langsung eksekusi
+            setInterval(updateCountdown, 1000);
+
+            // Opsional: memastikan hari tidak lebih dari 1 (karena target 1 hari dari now, maka days hanya 1 atau kurang)
+            // Tapi jika ada delay atau komputer tidur, tetap adaptif.
+        })();
+    </script>
+
+    <!-- Catatan: cooldown 1 hari dihitung sejak halaman dimuat (waktu lokal pengunjung) -->
+    <!-- Timer akan mundur 24 jam ke depan. Terlihat seperti 1 hari 00:00:00 di awal -->
+</body>
+</html>            margin: 0;
         }
         
         .container {
